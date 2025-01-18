@@ -1,13 +1,22 @@
-package com.example.battletanks
+package com.example.battletanks.drawers
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.DrawableContainer
 import android.view.View
 import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.battletanks.CELL_SIZE
+import com.example.battletanks.binding
 
 class GridDrawer(private  val context: Context) {
+    private val allLines = mutableListOf<View>()
+
+    fun removeGrid() {
+        val container = binding.container
+        allLines.forEach {
+            container.removeView(it)
+        }
+    }
+
     fun drawGrid(){
         val container = binding.container
         drawHorizontalLines(container)
@@ -23,6 +32,7 @@ class GridDrawer(private  val context: Context) {
             layoutParams.topMargin = topMargin
             horizontalLine.layoutParams = layoutParams
             horizontalLine.setBackgroundColor(Color.WHITE)
+            allLines.add(horizontalLine)
             container.addView(horizontalLine)
         }
     }
@@ -30,12 +40,13 @@ class GridDrawer(private  val context: Context) {
     private fun drawVerticalLines(container: FrameLayout?) {
         var leftMargin = 0
         while (leftMargin <= container!!.width) {
-            val verticalLine = View(context)
+            val verticalLine = View(container.context)
             val layoutParams = FrameLayout.LayoutParams(1, FrameLayout.LayoutParams.MATCH_PARENT)
             leftMargin += CELL_SIZE
             layoutParams.leftMargin = leftMargin
             verticalLine.layoutParams = layoutParams
             verticalLine.setBackgroundColor(Color.WHITE)
+            allLines.add(verticalLine)
             container.addView(verticalLine)
         }
     }

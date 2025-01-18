@@ -1,6 +1,5 @@
 package com.example.battletanks
 
-import android.icu.number.NumberRangeFormatter.RangeIdentityFallback
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
@@ -10,23 +9,32 @@ import android.view.KeyEvent.KEYCODE_DPAD_LEFT
 import android.view.KeyEvent.KEYCODE_DPAD_RIGHT
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.FrameLayout
-import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginTop
-import com.example.battletanks.Direction.UP
-import com.example.battletanks.Direction.LEFT
-import com.example.battletanks.Direction.RIGHT
-import com.example.battletanks.Direction.DOWN
+import com.example.battletanks.enums.Direction.UP
+import com.example.battletanks.enums.Direction.LEFT
+import com.example.battletanks.enums.Direction.RIGHT
+import com.example.battletanks.enums.Direction.DOWN
 import com.example.battletanks.databinding.ActivityMainBinding
+import com.example.battletanks.drawers.GridDrawer
+import com.example.battletanks.enums.Direction
+import com.example.battletanks.enums.Material
 
 const val CELL_SIZE = 50
 
 lateinit var binding: ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private var editMode = false // переменная, для показа в каком мы режиме находимся: редакта или игры
     private val gridDrawer by lazy {
-        GridDrawer(this)
+        GridDrawer(binding.container)
+    }
+
+    private val elementsDrawer by lazy {
+        elementsDrawer(binding.container)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +43,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.title = "Menu"
+
+        binding.editorClear.setOnClickListener { elementsDrawer.currentMaterial = Material.EMPTY }
+        binding.editorBrick.setOnClickListener { elementsDrawer.currentMaterial = Material.BRICK }
+        binding.editorConcrete.setOnClickListener {
+            elementsDrawer.currentMaterial = Material.CONCRETE
+        }
+        binding.editorGrass.setOnClickListener { elementsDrawer.currentMaterial = Material.GRASS}
+    }
+
+    // метод, переключения режима, и удаления, либо рисования сетки
+    private fun switchEditMode() {
+        if (editMode) {
+            gridDrawer.removeGrid()
+            binding.materialsContainer.visibility = INVISIBLE
+        } else {
+            gridDrawer.drawGrid()
+            binding.materialsContainer.visibility = VISIBLE
+        }
+        editMode = !editMode
     }
 
     //Наполнение меню
@@ -48,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         return when(item.itemId){
             R.id.menu_settings ->{
                 gridDrawer.drawGrid()
+                switchEditMode()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
