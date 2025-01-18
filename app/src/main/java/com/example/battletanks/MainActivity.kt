@@ -19,6 +19,7 @@ import com.example.battletanks.enums.Direction.LEFT
 import com.example.battletanks.enums.Direction.RIGHT
 import com.example.battletanks.enums.Direction.DOWN
 import com.example.battletanks.databinding.ActivityMainBinding
+import com.example.battletanks.drawers.ElementsDrawer
 import com.example.battletanks.drawers.GridDrawer
 import com.example.battletanks.enums.Direction
 import com.example.battletanks.enums.Material
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val elementsDrawer by lazy {
-        elementsDrawer(binding.container)
+        ElementsDrawer(binding.container)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

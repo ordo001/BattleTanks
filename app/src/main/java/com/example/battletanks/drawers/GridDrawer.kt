@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import com.example.battletanks.CELL_SIZE
 import com.example.battletanks.binding
 
-class GridDrawer(private  val context: Context) {
+class GridDrawer(private  val context: FrameLayout?) {
     private val allLines = mutableListOf<View>()
 
     fun removeGrid() {
@@ -26,7 +26,7 @@ class GridDrawer(private  val context: Context) {
     private fun drawHorizontalLines(container: FrameLayout?){
         var topMargin = 0
         while(topMargin <= container!!.height){
-            val horizontalLine = View(context)
+            val horizontalLine = View(container.context)
             val layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 1)
             topMargin += CELL_SIZE
             layoutParams.topMargin = topMargin
