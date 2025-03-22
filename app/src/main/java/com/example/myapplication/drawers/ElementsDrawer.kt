@@ -14,7 +14,7 @@ import com.example.myapplication.utils.getElementByCoordinates
 
 class ElementsDrawer(val container: FrameLayout) {
     var currentMaterial = Material.EMPTY
-     val elementsOnContainer= mutableListOf<Element>()
+    val elementsOnContainer= mutableListOf<Element>()
 
     fun onTouchContainer(x:Float,y:Float){
         val topMargin=y.toInt()-(y.toInt() % CELL_SIZE)
@@ -27,20 +27,6 @@ class ElementsDrawer(val container: FrameLayout) {
         }
     }
 
-    fun changeElementsVisibility(editMode: Boolean){
-        elementsOnContainer
-            .filter { it.material.visibleInEditableMode }
-            .forEach{setViewIdVisibility(it.viewId,editMode)}
-    }
-
-    private fun setViewIdVisibility(viewId:Int, editMode: Boolean){
-        val view = container.findViewById<View>(viewId)
-        if (editMode){
-            view.visibility = View.VISIBLE
-        }else{
-            view.visibility = View.GONE
-        }
-    }
 
     private fun drawOrReplaceView(coordinate: Coordinate){
         val viewOnCoordinate = getElementByCoordinates(coordinate, elementsOnContainer)
@@ -91,7 +77,7 @@ class ElementsDrawer(val container: FrameLayout) {
                     if (element.coordinate == Coordinate(
                             coordinate.top + height * CELL_SIZE,
                             coordinate.left + width * CELL_SIZE
-                    )
+                        )
                     ){
                         elements.add(element)
                     }
@@ -140,6 +126,3 @@ class ElementsDrawer(val container: FrameLayout) {
 
 
 }
-
-
-
