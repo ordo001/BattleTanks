@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import android.graphics.text.MeasuredText
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
@@ -16,6 +15,9 @@ import com.example.myapplication.enums.Direction.RIGHT
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.drawers.*
 import com.example.myapplication.enums.Material
+import com.example.myapplication.models.Coordinate
+import com.example.myapplication.models.Element
+import com.example.myapplication.models.Tank
 
 const val CELL_SIZE=50
 
@@ -23,6 +25,16 @@ lateinit var binding: ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private var editMode = false
+    private val playerTank = Tank(
+        Element(
+            R.id.myTank,
+            Material.PLAYER_TANK,
+            Coordinate(0,0),
+            Material.PLAYER_TANK.width,
+            Material.PLAYER_TANK.height
+        ), UP
+    )
+
     private val gridDrawer by lazy {
         GridDrawer(binding.container)
     }
@@ -32,9 +44,6 @@ class MainActivity : AppCompatActivity() {
         ElementsDrawer(binding.container)
     }
 
-    private val tankDrawer by lazy {
-        TankDrawer(binding.container)
-    }
 
     private val bulletDrawer by lazy{
         BulletDrawer(binding.container)
@@ -61,13 +70,13 @@ class MainActivity : AppCompatActivity() {
         binding.editorGrass.setOnClickListener { elementsDrawer.currentMaterial=Material.GRASS }
         binding.editorEagle.setOnClickListener { elementsDrawer.currentMaterial=Material.EAGLE }
 
-
         binding.container.setOnTouchListener { _, event ->
             elementsDrawer.onTouchContainer(event.x, event.y)
             return@setOnTouchListener true
         }
         elementsDrawer.drawElementsList(levelStorage.loadLevel())
         hideSettings()
+        elementsDrawer.elementsOnContainer.add(playerTank.element)
     }
 
     private fun switchEditMode(){
@@ -132,21 +141,16 @@ class MainActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when(keyCode)
         {
-            KEYCODE_DPAD_UP -> tankDrawer.move(binding.myTank,UP,elementsDrawer.elementsOnContainer)
-            KEYCODE_DPAD_DOWN -> tankDrawer.move(binding.myTank,DOWN,elementsDrawer.elementsOnContainer)
-            KEYCODE_DPAD_LEFT -> tankDrawer.move(binding.myTank,LEFT,elementsDrawer.elementsOnContainer)
-            KEYCODE_DPAD_RIGHT -> tankDrawer.move(binding.myTank,RIGHT,elementsDrawer.elementsOnContainer)
-            KEYCODE_SPACE -> bulletDrawer.makeBulletMove(binding.myTank,tankDrawer.currentDirection, elementsDrawer.elementsOnContainer)
+            KEYCODE_DPAD_UP -> move(UP)
+            KEYCODE_DPAD_DOWN -> move(DOWN)
+            KEYCODE_DPAD_LEFT -> move(LEFT)
+            KEYCODE_DPAD_RIGHT -> move(RIGHT)
+            KEYCODE_SPACE -> bulletDrawer.makeBulletMove(binding.myTank,playerTank.direction, elementsDrawer.elementsOnContainer)
         }
         return super.onKeyDown(keyCode, event)
     }
 
-
-
-
-
-
-
-
-
+    private  fun move(direction: com.example.myapplication.enums.Direction){
+        playerTank.move(direction, binding.container, elementsDrawer.elementsOnContainer)
+    }
 }
