@@ -7,7 +7,9 @@ import com.example.myapplication.binding
 import com.example.myapplication.drawers.BulletDrawer
 import com.example.myapplication.enums.Direction
 import com.example.myapplication.enums.Material
+import com.example.myapplication.utils.checkIfChanceBiggerThanRandom
 import com.example.myapplication.utils.checkViewCanMoveThroughBorder
+import com.example.myapplication.utils.getTankByCoordinates
 import com.example.myapplication.utils.runOnUiThread
 import kotlin.random.Random
 
@@ -32,6 +34,7 @@ class Tank(
         ) {
             emulateViewMoving(container, view)
             element.coordinate = nextCoordinate
+            generateRandomDirectionForEnemyTank()
         } else {
             element.coordinate = currentCoordinate
             (view.layoutParams as FrameLayout.LayoutParams).topMargin = currentCoordinate.top
@@ -40,11 +43,18 @@ class Tank(
         }
     }
 
+    private fun generateRandomDirectionForEnemyTank() {
+        if (element.material != Material.ENEMY_TANK) return
+
+        if (checkIfChanceBiggerThanRandom(10))
+            changeDirectionForEnemyTank()
+    }
+
     private fun changeDirectionForEnemyTank() {
-        if (element.material == Material.ENEMY_TANK) {
-            val randomDirection = Direction.values()[Random.nextInt(Direction.values().size)]
-            this.direction = randomDirection
-        }
+        if (element.material != Material.ENEMY_TANK) return
+
+        val randomDirection = Direction.values()[Random.nextInt(Direction.values().size)]
+        this.direction = randomDirection
     }
 
     private fun emulateViewMoving(container: FrameLayout, view: View) {
@@ -90,9 +100,10 @@ class Tank(
     ): Boolean {
         for (anyCoordinate in getTankCoordinates(coordinate)) {
             val element = getElementByCoordinates(coordinate, elementsOnContainer)
+                ?: getTankByCoordinates(anyCoordinate, bulletDrawer.enemyDrawer.tanks)
+            //if (element == null) element = getTankByCoordinates(anyCoordinate, bulletDrawer.enemyDrawer.tanks)
             if (element != null && !element.material.tankCanGoThrough) {
                 if (this == element) continue
-
                 return false
             }
         }
