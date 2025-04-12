@@ -2,12 +2,17 @@ package com.example.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ContentInfo
 import android.view.KeyEvent
 import android.view.KeyEvent.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.contentcapture.ContentCaptureCondition
+import androidx.core.content.ContextCompat
+import com.example.myapplication.GameCore.isPlaying
+import com.example.myapplication.GameCore.startOrPauseTheGame
 import com.example.myapplication.enums.Direction.DOWN
 import com.example.myapplication.enums.Direction.UP
 import com.example.myapplication.enums.Direction.RIGHT
@@ -26,9 +31,11 @@ lateinit var binding: ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private var editMode =false
+    private lateinit var item: MenuItem
 
     private lateinit var playerTank: Tank
     private lateinit var eagle: Element
+
 
     private val bulletDrawer by lazy {
         BulletDrawer(
@@ -95,6 +102,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        SoundManager.context = this
+
         supportActionBar?.title = "Menu"
 
         binding.editorClear.setOnClickListener { elementsDrawer.currentMaterial = Material.EMPTY }
@@ -151,6 +160,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.settings, menu)
+        item = menu!!.findItem(R.id.menu_play)
         return true
     }
 
@@ -168,7 +178,16 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.menu_play -> {
-                startTheGame()
+                if(editMode)  {
+                    return true
+                }
+                startOrPauseTheGame()
+                if (isPlaying()){
+                    startTheGame()
+                }
+                else{
+                    pauseTheGame()
+                }
                 true
             }
 
@@ -176,14 +195,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startTheGame() {
-        if (editMode) return
+    private fun pauseTheGame() {
+        item.icon = ContextCompat.getDrawable(this , R.drawable.ic_play)
+        GameCore.pauseTheGame()
+        SoundManager.pauseSounds()
+    }
 
+    override fun onPause(){
+        super.onPause()
+        pauseTheGame()
+    }
+
+
+    private fun startTheGame() {
         enemyDrawer.startEnemyCreation()
-        enemyDrawer.moveEnemyTanks()
+        item.icon = ContextCompat.getDrawable(this , R.drawable.ic_baseline_pause_24)
+        SoundManager.playIntroMusic()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (!isPlaying()){
+            return super.onKeyDown(keyCode, event)
+        }
         when(keyCode){
             KEYCODE_DPAD_UP -> move(UP)
             KEYCODE_DPAD_DOWN -> move(DOWN)
@@ -196,5 +229,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun move(direction: Direction) {
         playerTank.move(direction, binding.container, elementsDrawer.elementsOnContainer)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KEYCODE_DPAD_UP, KEYCODE_DPAD_LEFT,
+            KEYCODE_DPAD_DOWN, KEYCODE_DPAD_RIGHT -> onButtonReleased()
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
+    private fun onButtonPressed(direction: Direction) {
+        SoundManager.tankMove()
+        playerTank.move(direction, binding.container, elementsDrawer.elementsOnContainer)
+    }
+
+    private fun onButtonReleased() {
+        if (enemyDrawer.tanks.isEmpty())
+            SoundManager.tankStop()
     }
 }

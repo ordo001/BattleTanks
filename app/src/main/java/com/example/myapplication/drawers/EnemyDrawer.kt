@@ -2,6 +2,8 @@ package com.example.myapplication.drawers
 
 import android.widget.FrameLayout
 import com.example.myapplication.CELL_SIZE
+import com.example.myapplication.GameCore
+import com.example.myapplication.SoundManager
 //import com.example.myapplication.binding
 import com.example.myapplication.enums.CELLS_TANKS_SIZE
 import com.example.myapplication.enums.Direction
@@ -23,6 +25,7 @@ class EnemyDrawer(
     private var currentCoordinate: Coordinate
     val tanks = mutableListOf<Tank>()
     lateinit var bulletDrawer: BulletDrawer
+    private var gameStarted = false
 
     init {
         respawnList = getRespawnList()
@@ -66,9 +69,11 @@ class EnemyDrawer(
         tanks.add(enemyTank)
     }
 
-    fun moveEnemyTanks() {
+    private fun moveEnemyTanks() {
         Thread(Runnable {
             while (true) {
+                if (!GameCore.isPlaying())
+                    continue
                 goThroughAllTanks()
                 Thread.sleep(400)
             }
@@ -76,6 +81,12 @@ class EnemyDrawer(
     }
 
     private fun goThroughAllTanks() {
+        if (tanks.isNotEmpty()) {
+            SoundManager.tankMove()
+        } else {
+            SoundManager.tankStop()
+        }
+
         tanks.toList().forEach {
             it.move(it.direction, container, elements)
             if (checkIfChanceBiggerThanRandom(10))
@@ -84,18 +95,23 @@ class EnemyDrawer(
     }
 
     fun startEnemyCreation() {
+        if (gameStarted){
+            return
+        }
+        gameStarted=true
         Thread(Runnable {
             while (enemyAmount < MAX_ENEMY_AMOUNT) {
+                if (!GameCore.isPlaying())
+                    continue
                 drawEnemy()
                 enemyAmount++
                 Thread.sleep(3000)
             }
-        })
+        }).start()
+        moveEnemyTanks()
     }
 
     fun removeTank(tankIndex: Int) {
-        if (tankIndex < 0) return
-
         tanks.removeAt(tankIndex)
     }
 }
