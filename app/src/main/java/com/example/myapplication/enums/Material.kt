@@ -8,13 +8,13 @@ const val CELLS_EAGLE_HEIGHT = 3
 const val CELLS_TANKS_SIZE = 2
 
 enum class Material(
-    val tankCanGoThrough:Boolean,
+    val tankCanGoThrough: Boolean,
     val bulletCanGoThrough: Boolean,
     val simpleBulletCanDestroy: Boolean,
     val elementsAmountOnScreen: Int,
     val width: Int,
     val height: Int,
-    val image: Int?,
+    val image: Int?
 ) {
     EMPTY(
         true,
@@ -23,7 +23,7 @@ enum class Material(
         0,
         0,
         0,
-        null,
+        null
     ),
     BRICK(
         false,
@@ -32,7 +32,7 @@ enum class Material(
         0,
         CELLS_SIMPLE_ELEMENT,
         CELLS_SIMPLE_ELEMENT,
-        R.drawable.brick,
+        R.drawable.brick
     ),
     CONCRETE(
         false,
@@ -41,7 +41,7 @@ enum class Material(
         0,
         CELLS_SIMPLE_ELEMENT,
         CELLS_SIMPLE_ELEMENT,
-        R.drawable.concrete,
+        R.drawable.concrete
     ),
     GRASS(
         true,
@@ -50,7 +50,7 @@ enum class Material(
         0,
         CELLS_SIMPLE_ELEMENT,
         CELLS_SIMPLE_ELEMENT,
-        R.drawable.grass,
+        R.drawable.grass
     ),
     EAGLE(
         false,
@@ -59,8 +59,26 @@ enum class Material(
         1,
         CELLS_EAGLE_WIDTH,
         CELLS_EAGLE_HEIGHT,
-        R.drawable.eagle,
+        R.drawable.eagle
     ),
+    /*ENEMY_TANK_RESPAWN(
+        true,
+        true,
+        false,
+        3,
+        CELLS_TANKS_SIZE,
+        CELLS_TANKS_SIZE,
+        R.drawable.enemy_tank
+    ),
+    PLAYER_TANK_RESPAWN(
+        true,
+        true,
+        false,
+        1,
+        CELLS_TANKS_SIZE,
+        CELLS_TANKS_SIZE,
+        R.drawable.tank
+    ),*/
     ENEMY_TANK(
         false,
         false,
@@ -68,15 +86,15 @@ enum class Material(
         0,
         CELLS_TANKS_SIZE,
         CELLS_TANKS_SIZE,
-        R.drawable.enemy_tank,
+        R.drawable.enemy_tank
     ),
     PLAYER_TANK(
         false,
         false,
         true,
-        0,
+        1,
         CELLS_TANKS_SIZE,
         CELLS_TANKS_SIZE,
-        R.drawable.tank,
+        R.drawable.tank
     )
 }

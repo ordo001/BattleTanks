@@ -3,10 +3,10 @@ package com.example.myapplication.models
 import android.view.View
 import com.example.myapplication.enums.Material
 
-data class Element constructor(
-    val viewId:Int = View.generateViewId(),
+data class Element(
+    val viewId: Int = View.generateViewId(),
     val material: Material,
     var coordinate: Coordinate,
-    val width: Int,
-    val height: Int
-    )
+    val width: Int = material.width,
+    val height: Int = material.height
+)
