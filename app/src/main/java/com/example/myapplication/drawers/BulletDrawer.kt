@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.example.myapplication.R
-import com.example.myapplication.CELL_SIZE
 import com.example.myapplication.GameCore
+import com.example.myapplication.activities.CELL_SIZE
 
-import com.example.myapplication.SoundManager
+import com.example.myapplication.sounds.MainSoundPlayer
 import com.example.myapplication.enums.Direction
 import com.example.myapplication.enums.Material
 import com.example.myapplication.models.Bullet
@@ -16,7 +16,6 @@ import com.example.myapplication.models.Coordinate
 import com.example.myapplication.models.Element
 import com.example.myapplication.models.Tank
 import com.example.myapplication.utils.*
-import java.security.PrivateKey
 
 private const val BULLET_HEIGHT = 15
 private const val BULLET_WIDTH = 15
@@ -25,7 +24,7 @@ class BulletDrawer(
     private val container: FrameLayout,
     private val elements: MutableList<Element>,
     private val enemyDrawer: EnemyDrawer,
-    private val soundManager: SoundManager,
+    private val soundManager: MainSoundPlayer,
     private val gameCore: GameCore
 
 ) {

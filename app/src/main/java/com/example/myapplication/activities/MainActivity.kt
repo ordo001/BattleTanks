@@ -1,16 +1,19 @@
-package com.example.myapplication
+package com.example.myapplication.activities
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ContentInfo
 import android.view.KeyEvent
 import android.view.KeyEvent.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.view.contentcapture.ContentCaptureCondition
 import androidx.core.content.ContextCompat
+import com.example.myapplication.GameCore
+import com.example.myapplication.LevelStorage
+import com.example.myapplication.R
 import com.example.myapplication.enums.Direction.DOWN
 import com.example.myapplication.enums.Direction.UP
 import com.example.myapplication.enums.Direction.RIGHT
@@ -22,6 +25,7 @@ import com.example.myapplication.enums.Material
 import com.example.myapplication.models.Coordinate
 import com.example.myapplication.models.Element
 import com.example.myapplication.models.Tank
+import com.example.myapplication.sounds.MainSoundPlayer
 
 const val CELL_SIZE = 50
 
@@ -49,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val soundManager by lazy {
-        SoundManager(this)
+        MainSoundPlayer(this)
 
     }
 
@@ -110,8 +114,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
+        soundManager.loadSounds()
         supportActionBar?.title = "Menu"
 
         binding.editorClear.setOnClickListener { elementsDrawer.currentMaterial = Material.EMPTY }
@@ -255,5 +258,12 @@ class MainActivity : AppCompatActivity() {
     private fun onButtonReleased() {
         if (enemyDrawer.tanks.isEmpty())
             soundManager.tankStop()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+       if(resultCode == Activity.RESULT_OK && requestCode == SCORE_REQUEST_CODE){
+           recreate()
+    }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

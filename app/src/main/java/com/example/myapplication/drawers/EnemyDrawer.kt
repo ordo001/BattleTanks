@@ -1,9 +1,9 @@
 package com.example.myapplication.drawers
 
 import android.widget.FrameLayout
-import com.example.myapplication.CELL_SIZE
 import com.example.myapplication.GameCore
-import com.example.myapplication.SoundManager
+import com.example.myapplication.activities.CELL_SIZE
+import com.example.myapplication.sounds.MainSoundPlayer
 //import com.example.myapplication.binding
 import com.example.myapplication.enums.CELLS_TANKS_SIZE
 import com.example.myapplication.enums.Direction
@@ -11,6 +11,7 @@ import com.example.myapplication.enums.Material.ENEMY_TANK
 import com.example.myapplication.models.Coordinate
 import com.example.myapplication.models.Element
 import com.example.myapplication.models.Tank
+import com.example.myapplication.sounds.GameSound
 import com.example.myapplication.utils.checkIfChanceBiggerThanRandom
 import com.example.myapplication.utils.drawElement
 
@@ -19,7 +20,7 @@ private const val MAX_ENEMY_AMOUNT = 20
 class EnemyDrawer(
     private val container: FrameLayout,
     private val elements: MutableList<Element>,
-    private val soundManager: SoundManager,
+    private val soundManager: MainSoundPlayer,
     private val gameCore: GameCore
 ) {
     private val respawnList: List<Coordinate>
@@ -113,7 +114,16 @@ class EnemyDrawer(
         moveEnemyTanks()
     }
 
+    fun isAllTanksDestroyed():Boolean{
+        return enemyAmount == MAX_ENEMY_AMOUNT && tanks.toList().isEmpty()
+    }
+
+    fun getPlayerScore() = enemyAmount * 100
+
     fun removeTank(tankIndex: Int) {
         tanks.removeAt(tankIndex)
+        if(isAllTanksDestroyed()){
+            gameCore.playerWon(getPlayerScore())
+        }
     }
 }
