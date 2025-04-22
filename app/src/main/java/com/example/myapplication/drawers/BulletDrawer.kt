@@ -1,21 +1,21 @@
-package  com.example.myapplication.drawers
+package com.example.myapplication.drawers
 
 import android.app.Activity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import  com.example.myapplication.R
-import  com.example.myapplication.GameCore
-import  com.example.myapplication.activities.CELL_SIZE
+import com.example.myapplication.R
+import com.example.myapplication.GameCore
+import com.example.myapplication.activities.CELL_SIZE
 
-import  com.example.myapplication.sounds.MainSoundPlayer
-import  com.example.myapplication.enums.Direction
-import  com.example.myapplication.enums.Material
-import  com.example.myapplication.models.Bullet
-import  com.example.myapplication.models.Coordinate
-import  com.example.myapplication.models.Element
-import  com.example.myapplication.models.Tank
-import  com.example.myapplication.utils.*
+import com.example.myapplication.sounds.MainSoundPlayer
+import com.example.myapplication.enums.Direction
+import com.example.myapplication.enums.Material
+import com.example.myapplication.models.Bullet
+import com.example.myapplication.models.Coordinate
+import com.example.myapplication.models.Element
+import com.example.myapplication.models.Tank
+import com.example.myapplication.utils.*
 
 private const val BULLET_HEIGHT = 15
 private const val BULLET_WIDTH = 15
@@ -161,7 +161,7 @@ class BulletDrawer(
 
     private fun stopGameIfNecessary(element: Element) {
         if (element.material == Material.PLAYER_TANK || element.material == Material.EAGLE)
-            gameCore.destroyPlayerOrBase()
+            gameCore.destroyPlayerOrBase(enemyDrawer.getPlayerScore())
     }
 
 
