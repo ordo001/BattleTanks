@@ -1,4 +1,4 @@
-package com.example.myapplication.activities
+package  com.example.myapplication.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -11,28 +11,29 @@ import android.view.MenuItem
 import android.view.View.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.core.content.ContextCompat
-import com.example.myapplication.GameCore
-import com.example.myapplication.LevelStorage
-import com.example.myapplication.R
-import com.example.myapplication.enums.Direction.DOWN
-import com.example.myapplication.enums.Direction.UP
-import com.example.myapplication.enums.Direction.RIGHT
-import com.example.myapplication.enums.Direction.LEFT
-import com.example.myapplication.databinding.ActivityMainBinding
-import com.example.myapplication.drawers.*
-import com.example.myapplication.enums.Direction
-import com.example.myapplication.enums.Material
-import com.example.myapplication.models.Coordinate
-import com.example.myapplication.models.Element
-import com.example.myapplication.models.Tank
-import com.example.myapplication.sounds.MainSoundPlayer
+import  com.example.myapplication.GameCore
+import  com.example.myapplication.LevelStorage
+import  com.example.myapplication.R
+import  com.example.myapplication.enums.Direction.DOWN
+import  com.example.myapplication.enums.Direction.UP
+import  com.example.myapplication.enums.Direction.RIGHT
+import  com.example.myapplication.enums.Direction.LEFT
+import  com.example.myapplication.databinding.ActivityMainBinding
+import  com.example.myapplication.drawers.*
+import  com.example.myapplication.enums.Direction
+import  com.example.myapplication.enums.Material
+import  com.example.myapplication.models.Coordinate
+import  com.example.myapplication.models.Element
+import  com.example.myapplication.models.Tank
+import  com.example.myapplication.sounds.MainSoundPlayer
+import  com.example.myapplication.utils.ProgressIndicator
 
 const val CELL_SIZE = 50
 
 lateinit var binding: ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    private var editMode =false
+class MainActivity : AppCompatActivity(), ProgressIndicator {
+    private var editMode = false
     private lateinit var item: MenuItem
 
     private lateinit var playerTank: Tank
@@ -48,13 +49,13 @@ class MainActivity : AppCompatActivity() {
             gameCore
         )
     }
+
     private val gameCore by lazy {
         GameCore(this)
     }
 
     private val soundManager by lazy {
-        MainSoundPlayer(this)
-
+        MainSoundPlayer(this, this)
     }
 
     private fun createTank(elementWidth: Int, elementHeight: Int): Tank {
@@ -265,5 +266,17 @@ class MainActivity : AppCompatActivity() {
            recreate()
     }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun showProgress() {
+        binding.container.visibility = INVISIBLE
+        binding.totalContainer.setBackgroundResource(R.color.gray)
+        binding.initTitle.visibility = VISIBLE
+    }
+
+    override fun dismissProgress() {
+        binding.container.visibility = VISIBLE
+        binding.totalContainer.setBackgroundResource(R.color.black)
+        binding.initTitle.visibility = GONE
     }
 }
